@@ -1,0 +1,129 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: ecommerce-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - ecommerce-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  eureka-sv:
+    build: ./eureka-sv/eureka-sv
+    mem_limit: 512m
+    ports:
+      - "8761:8761"
+    depends_on:
+      - mysql
+    networks:
+      - ecommerce-net
+
+  gateway-service:
+    build: ./ApiGateway
+    mem_limit: 512m
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - EUREKA_URL=http://eureka-sv:8761/eureka
+    depends_on:
+      - eureka-sv
+    networks:
+      - ecommerce-net
+
+  product-service-1:
+    build: ./product-service/product-service
+    mem_limit: 512m
+    ports:
+      - "9001:9001"
+    env_file: .env
+    environment:
+      - SERVER_PORT=9001
+      - EUREKA_URL=http://eureka-sv:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/product_db?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-sv:
+        condition: service_started
+
+    networks:
+      - ecommerce-net
+
+  product-service-2:
+    build: ./product-service/product-service
+    mem_limit: 512m
+    ports:
+      - "9002:9002"
+    env_file: .env
+    environment:
+      - SERVER_PORT=9002
+      - EUREKA_URL=http://eureka-sv:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/product_db?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-sv:
+        condition: service_started
+    networks:
+      - ecommerce-net
+
+  shoppingcart-service:
+    build: ./shoppingcart-service/shoppingcart-service
+    mem_limit: 512m
+    ports:
+      - "8082:8082"
+    env_file: .env
+    environment:
+      - SERVER_PORT=8082
+      - EUREKA_URL=http://eureka-sv:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/shoppingcart_db?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-sv:
+        condition: service_started
+    networks:
+      - ecommerce-net
+
+  sale-service:
+    build: ./sale-service/sale-service
+    mem_limit: 512m
+    ports:
+      - "8083:8083"
+    env_file: .env
+    environment:
+      - SERVER_PORT=8083
+      - EUREKA_URL=http://eureka-sv:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/sale_db?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-sv:
+        condition: service_started
+    networks:
+      - ecommerce-net
+
+networks:
+  ecommerce-net:
+
+volumes:
+  mysql_data:

@@ -1,0 +1,71 @@
+server:
+  port: 443
+
+spring:
+  application:
+    name: gateway-service
+
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: product-service
+              uri: lb://product-service
+              predicates:
+                - Path=/products/**
+
+            - id: shoppingcart-service
+              uri: lb://shoppingcart-service
+              predicates:
+                - Path=/carts/**
+
+            - id: sale-service
+              uri: lb://sale-service
+              predicates:
+                - Path=/sales/**
+
+            # --- OpenAPI proxy routes ---
+            - id: product-openapi
+              uri: lb://product-service
+              predicates:
+                - Path=/products/v3/api-docs/**
+              filters:
+                - RewritePath=/products/(?<segment>.*), /${segment}
+
+            - id: cart-openapi
+              uri: lb://shoppingcart-service
+              predicates:
+                - Path=/carts/v3/api-docs/**
+              filters:
+                - RewritePath=/carts/(?<segment>.*), /${segment}
+
+            - id: sale-openapi
+              uri: lb://sale-service
+              predicates:
+                - Path=/sales/v3/api-docs/**
+              filters:
+                - RewritePath=/sales/(?<segment>.*), /${segment}
+    discovery:
+      locator:
+        enabled: true
+        lower-case-service-id: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+springdoc:
+  api-docs:
+    enabled: true
+
+  swagger-ui:
+    disable-swagger-default-url: true
+    urls:
+      - name: product-service
+        url: /products/v3/api-docs
+      - name: shoppingcart-service
+        url: /carts/v3/api-docs
+      - name: sale-service
+        url: /sales/v3/api-docs
