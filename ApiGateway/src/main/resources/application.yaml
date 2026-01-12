@@ -25,6 +25,11 @@ spring:
               predicates:
                 - Path=/sales/**
 
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/users/**
+
             # --- OpenAPI proxy routes ---
             - id: product-openapi
               uri: lb://product-service

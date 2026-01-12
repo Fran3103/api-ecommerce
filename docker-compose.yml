@@ -121,6 +121,26 @@ services:
         condition: service_started
     networks:
       - ecommerce-net
+  user-service:
+    build: ./users
+    mem_limit: 512m
+    ports:
+      - "8088:8088"
+    env_file: .env
+    environment:
+      - SERVER_PORT=8088
+      - EUREKA_URL=http://eureka-sv:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/user_db?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-sv:
+        condition: service_started
+    networks:
+      - ecommerce-net
+    
 
 networks:
   ecommerce-net:
