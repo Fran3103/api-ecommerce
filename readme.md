@@ -12,10 +12,11 @@ Incluye **Service Discovery (Eureka)**, **API Gateway**, **Load Balancing**, per
 Servicios incluidos:
 
 - **Eureka Server** (`eureka-sv`) → Service Discovery
-- **API Gateway** (`gateway-service`) → Entry point + ruteo por paths
+- **API Gateway** (`ApiGateway`) → Entry point + ruteo por paths
 - **Product Service** (`product-service`) → Catálogo (2 instancias)
 - **ShoppingCart Service** (`shoppingcart-service`) → Carrito
 - **Sale Service** (`sale-service`) → Ventas
+- **User Service** (`user-service`) → Usuarios
 - **MySQL** (`mysql`) → Una instancia, múltiples schemas (una DB por servicio)
 
 ---
@@ -40,10 +41,11 @@ Servicios incluidos:
 | Servicio | Responsabilidad | Ruta por Gateway |
 |---------|------------------|------------------|
 | `eureka-sv` | Service Discovery | (UI) `http://localhost:8761` |
-| `gateway-service` | Entrada única a la API + ruteo | `http://localhost:8080` |
+| `ApiGateway` | Entrada única a la API + ruteo | `http://localhost:443` |
 | `product-service` | Productos | `/products/**` |
 | `shoppingcart-service` | Carritos | `/carts/**` |
 | `sale-service` | Ventas/órdenes | `/sales/**` |
+| `user-service` | usuarios | `/users/**` |
 | `mysql` | Base de datos | host: `3307` (container: `3306`) |
 
 ---
@@ -55,12 +57,12 @@ Servicios incluidos:
 - Docker Compose (v2)
 
 ### 2) Variables de entorno
-En la raíz del proyecto existe un `.env` (ejemplo):
+En la raíz del proyecto existe un `.env` :
 
 ```env
 DB_USERNAME=root
 DB_PASSWORD=root
-
+```
 ## Inicializacion de bases (mysql-init)
 
 Este repo incluye una carpeta mysql-init/ para crear las bases al iniciar MySQL.
@@ -97,4 +99,40 @@ Cada microservicio expone su OpenAPI (/v3/api-docs) y el Gateway centraliza la d
 - http://localhost:443/carts/v3/api-docs
 
 - http://localhost:443/sales/v3/api-docs
+
+-http://localhost:443/users/v3/api-docs
+
+
+##  Cómo probar (rápido)
+
+Una vez levantado con Docker:
+
+- Swagger (Gateway): http://localhost:443/swagger-ui/index.html
+
+
+```bash
+# Productos
+curl -i http://localhost:443/products/all
+
+# Carritos
+curl -i http://localhost:443/carts/1
+
+# Ventas
+curl -i http://localhost:443/sales/1
+
+# Usuarios
+curl -i http://localhost:443/users/all
+
+```
+![Preview](public/preview1.png)
+![Preview](public/preview2.png)
+![Preview](public/preview3.png)
+![Preview](public/preview4.png)
+![Preview](public/preview5.png)
+![Preview](public/preview6.png)
+![Preview](public/preview7.png)
+![Preview](public/preview8.png)
+
+
+
 
