@@ -124,14 +124,22 @@ curl -i http://localhost:443/sales/1
 curl -i http://localhost:443/users/all
 
 ```
+##  Asi se ve la documentacion
 ![Preview](public/preview1.png)
 ![Preview](public/preview2.png)
 ![Preview](public/preview3.png)
 ![Preview](public/preview4.png)
-![Preview](public/preview5.png)
-![Preview](public/preview6.png)
-![Preview](public/preview7.png)
-![Preview](public/preview8.png)
+
+## Pruebas en Postman
+
+### Creando Producto
+![Preview](public/crearProducto.png)
+### Creando Carrito
+![Preview](public/createCart.png)
+### Asignando Producto a Carrito
+![Preview](public/asignaritem.png)
+### Devolviendo carrito completo
+![Preview](public/obtenercarrito.png)
 
 
 
