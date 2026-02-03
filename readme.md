@@ -45,7 +45,7 @@ Servicios incluidos:
 | `product-service` | Productos | `/products/**` |
 | `shoppingcart-service` | Carritos | `/carts/**` |
 | `sale-service` | Ventas/órdenes | `/sales/**` |
-| `user-service` | usuarios | `/users/**` |
+| `user` | usuarios | `/users/**` |
 | `mysql` | Base de datos | host: `3307` (container: `3306`) |
 
 ---
