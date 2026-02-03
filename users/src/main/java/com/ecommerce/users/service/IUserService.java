@@ -3,6 +3,7 @@ package com.ecommerce.users.service;
 import com.ecommerce.users.dto.UserDto;
 import com.ecommerce.users.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IUserService {
@@ -15,5 +16,6 @@ public interface IUserService {
 
     Optional<User> updateUser(Long id, User userDetails);
 
+    List<User> findAllUsers();
 
 }

@@ -32,7 +32,7 @@ public class CartController {
     public CartService cartService;
 
     @Operation(summary = "Get or create cart by user ID", description = "Retrieves the shopping cart for a user, or creates one if it doesn't exist")
-    @GetMapping("/cart/{userId}")
+    @GetMapping("/user/{userId}")
     public Cart getCart(@PathVariable Long userId) {
         return cartService.getorCreateCart(userId);
     }
@@ -51,10 +51,9 @@ public class CartController {
     }
 
     @Operation(summary = "Get cart by ID", description = "Retrieves the shopping cart details by its ID")
-    @GetMapping("cart/cart/{cartId}")
+    @GetMapping("/{cartId}")
     public CartDto getCartById(@PathVariable Long cartId) {
 
-        System.out.println("paso por aca" );
         return cartService.getCartDto(cartId);
     }
 }

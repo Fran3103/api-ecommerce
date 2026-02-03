@@ -51,6 +51,13 @@ spring:
                 - Path=/sales/v3/api-docs/**
               filters:
                 - RewritePath=/sales/(?<segment>.*), /${segment}
+            - id: user-openapi
+              uri: lb://user-service
+              predicates:
+                - Path=/users/v3/api-docs/**
+              filters:
+                - RewritePath=/users/(?<segment>.*), /${segment}
+
     discovery:
       locator:
         enabled: true
@@ -74,3 +81,5 @@ springdoc:
         url: /carts/v3/api-docs
       - name: sale-service
         url: /sales/v3/api-docs
+      - name: user-service
+        url: /users/v3/api-docs
